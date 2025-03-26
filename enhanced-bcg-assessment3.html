@@ -1,0 +1,1938 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>BCG AI Readiness Assessment</title>
+  <style>
+    :root {
+      --bcg-green: #147B58;
+      --bcg-light-green: #e6f7f2;
+      --white: #ffffff;
+      --black: #333333;
+      --gray-100: #f3f4f6;
+      --gray-200: #e5e7eb;
+      --gray-300: #d1d5db;
+      --gray-600: #4b5563;
+      
+      /* Added colors for journey path */
+      --journey-color: #3b82f6; /* Consultant's journey */
+      --client-color: #8b5cf6;  /* Client experience */
+      --org-color: #10b981;     /* Organizational metamorphosis */
+    }
+    
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Helvetica Neue', Arial, sans-serif;
+    }
+    
+    body {
+      background-color: #333333;
+      color: var(--black);
+      line-height: 1.6;
+      position: relative;
+      overflow-x: hidden;
+    }
+    
+    /* Background Animation Elements */
+    .bg-animation-container {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: -1;
+      overflow: hidden;
+    }
+    
+    .bg-particle {
+      position: absolute;
+      background-color: rgba(255, 255, 255, 0.05);
+      border-radius: 50%;
+      transform: translate3d(0, 0, 0);
+    }
+    
+    .bg-circle {
+      position: absolute;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 50%;
+      opacity: 0;
+      transform: translate(-50%, -50%) scale(0);
+      animation: circleGrow 10s infinite;
+    }
+    
+    .bg-grid-line {
+      position: absolute;
+      background-color: rgba(255, 255, 255, 0.05);
+      transform-origin: center;
+    }
+    
+    .horizontal {
+      height: 1px;
+      width: 100%;
+    }
+    
+    .vertical {
+      width: 1px;
+      height: 100%;
+    }
+    
+    @keyframes circleGrow {
+      0% {
+        opacity: 0;
+        transform: translate(-50%, -50%) scale(0);
+      }
+      20% {
+        opacity: 0.3;
+      }
+      80% {
+        opacity: 0.1;
+      }
+      100% {
+        opacity: 0;
+        transform: translate(-50%, -50%) scale(1);
+      }
+    }
+    
+    .container {
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 2rem;
+      position: relative;
+      z-index: 1;
+    }
+    
+    .card {
+      background-color: var(--white);
+      border-radius: 0.5rem;
+      box-shadow: 0 15px 35px rgba(0, 0, 0, 0.4), 0 5px 15px rgba(0, 0, 0, 0.5);
+      padding: 2rem;
+      margin-bottom: 2rem;
+      position: relative;
+      z-index: 10;
+      transform: translateZ(0);
+      transition: transform 0.4s cubic-bezier(0.165, 0.84, 0.44, 1), 
+                  box-shadow 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
+      overflow: hidden;
+    }
+    
+    .card:hover {
+      transform: translateY(-5px) scale(1.01);
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5), 0 10px 20px rgba(0, 0, 0, 0.5);
+    }
+    
+    /* Card shine effect on hover */
+    .card:after {
+      content: '';
+      position: absolute;
+      top: -50%;
+      left: -50%;
+      width: 200%;
+      height: 200%;
+      background: linear-gradient(
+        to bottom right,
+        rgba(255, 255, 255, 0) 0%,
+        rgba(255, 255, 255, 0.1) 50%,
+        rgba(255, 255, 255, 0) 100%
+      );
+      transform: rotate(30deg);
+      opacity: 0;
+      transition: opacity 0.6s;
+      pointer-events: none;
+    }
+    
+    .card:hover:after {
+      opacity: 1;
+      animation: shine 1.5s cubic-bezier(0.165, 0.84, 0.44, 1);
+    }
+    
+    @keyframes shine {
+      from {
+        transform: rotate(30deg) translateX(-30%);
+        opacity: 0;
+      }
+      to {
+        transform: rotate(30deg) translateX(100%);
+        opacity: 0.3;
+      }
+    }
+    
+    h1 {
+      color: var(--bcg-green);
+      font-size: 1.8rem;
+      margin-bottom: 1rem;
+      font-weight: bold;
+    }
+    
+    h2 {
+      font-size: 1.4rem;
+      margin-bottom: 1rem;
+      font-weight: 300;
+    }
+    
+    h3 {
+      font-size: 1.2rem;
+      margin-bottom: 1rem;
+    }
+    
+    p {
+      margin-bottom: 1rem;
+    }
+    
+    .form-group {
+      margin-bottom: 1.5rem;
+      position: relative;
+      overflow: hidden;
+    }
+    
+    label {
+      display: block;
+      margin-bottom: 0.5rem;
+      font-weight: 500;
+      transition: transform 0.3s, color 0.3s;
+    }
+    
+    input[type="text"],
+    input[type="email"] {
+      width: 100%;
+      padding: 0.75rem;
+      border: 1px solid var(--gray-300);
+      border-radius: 0.25rem;
+      font-size: 1rem;
+      transition: border-color 0.3s, box-shadow 0.3s, transform 0.3s;
+    }
+    
+    input[type="text"]:focus,
+    input[type="email"]:focus {
+      outline: none;
+      border-color: var(--bcg-green);
+      box-shadow: 0 0 0 2px rgba(20, 123, 88, 0.2);
+      transform: translateY(-2px);
+    }
+    
+    /* Input focus animation */
+    .form-group:focus-within label {
+      color: var(--bcg-green);
+      transform: translateY(-2px);
+    }
+    
+    button {
+      background-color: var(--bcg-green);
+      color: var(--white);
+      border: none;
+      border-radius: 0.25rem;
+      padding: 0.75rem 1.5rem;
+      font-size: 1rem;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.3s cubic-bezier(0.165, 0.84, 0.44, 1);
+      width: 100%;
+      position: relative;
+      overflow: hidden;
+    }
+    
+    button:hover:not(:disabled) {
+      background-color: #0d6a4b;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 10px rgba(20, 123, 88, 0.4);
+    }
+    
+    button:active:not(:disabled) {
+      transform: translateY(0);
+      box-shadow: 0 2px 5px rgba(20, 123, 88, 0.4);
+    }
+    
+    /* Button ripple effect */
+    button:after {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 5px;
+      height: 5px;
+      background: rgba(255, 255, 255, 0.5);
+      opacity: 0;
+      border-radius: 100%;
+      transform: scale(1);
+      transform-origin: 50% 50%;
+    }
+    
+    button:focus:not(:active)::after {
+      animation: ripple 1s ease-out;
+    }
+    
+    @keyframes ripple {
+      0% {
+        transform: scale(0);
+        opacity: 1;
+      }
+      100% {
+        transform: scale(300);
+        opacity: 0;
+      }
+    }
+    
+    button:disabled {
+      opacity: 0.7;
+      cursor: not-allowed;
+    }
+    
+    /* Journey Map Progress Bar */
+    .progress-container {
+      margin-bottom: 1.5rem;
+    }
+    
+    /* Replace standard progress bar with journey map */
+    .journey-map {
+      position: relative;
+      height: 4rem;
+      margin: 1rem 0 2rem;
+      overflow: visible;
+    }
+    
+    .journey-path {
+      position: absolute;
+      top: 50%;
+      left: 0;
+      width: 100%;
+      height: 4px;
+      background: #111111;
+      transform: translateY(-50%);
+      border-radius: 2px;
+      overflow: visible;
+    }
+    
+    .journey-progress {
+      position: absolute;
+      top: 0;
+      left: 0;
+      height: 100%;
+      background: linear-gradient(to right, var(--journey-color), var(--client-color), var(--org-color));
+      border-radius: 2px;
+      width: 0%;
+      transition: width 0.6s cubic-bezier(0.65, 0, 0.35, 1);
+    }
+    
+    .journey-stage {
+      position: absolute;
+      top: 50%;
+      transform: translate(-50%, -50%);
+      width: 16px;
+      height: 16px;
+      border-radius: 50%;
+      background-color: #111111;
+      border: 2px solid #111111;
+      z-index: 2;
+      transition: all 0.3s ease;
+    }
+    
+    .journey-stage.active {
+      background-color: var(--bcg-green);
+      box-shadow: 0 0 0 3px rgba(20, 123, 88, 0.3);
+    }
+    
+    .journey-stage.completed {
+      background-color: var(--bcg-green);
+    }
+    
+    .journey-stage-label {
+      position: absolute;
+      top: -25px;
+      left: 50%;
+      transform: translateX(-50%);
+      font-size: 0.75rem;
+      white-space: nowrap;
+      opacity: 0.7;
+      transition: opacity 0.3s, transform 0.3s;
+    }
+    
+    .journey-stage:hover .journey-stage-label,
+    .journey-stage.active .journey-stage-label {
+      opacity: 1;
+      transform: translateX(-50%) translateY(-2px);
+    }
+    
+    .journey-icon {
+      position: absolute;
+      top: 50%;
+      left: 0%;
+      transform: translate(-50%, -50%);
+      width: 24px;
+      height: 24px;
+      background-color: var(--bcg-green);
+      border-radius: 50%;
+      z-index: 3;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-weight: bold;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
+      transition: left 0.6s cubic-bezier(0.65, 0, 0.35, 1);
+    }
+    
+    .option-button {
+      display: block;
+      width: 100%;
+      text-align: left;
+      padding: 1rem;
+      margin-bottom: 0.75rem;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 0.25rem;
+      background-color: #000000;
+      color: white;
+      cursor: pointer;
+      transition: all 0.3s cubic-bezier(0.165, 0.84, 0.44, 1);
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+      transform: translateZ(0);
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .option-button:hover {
+      background-color: #222222;
+      transform: translateY(-3px) scale(1.01);
+      box-shadow: 0 6px 12px rgba(0, 0, 0, 0.4);
+    }
+    
+    .option-button:active {
+      transform: translateY(-1px);
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.4);
+    }
+    
+    /* Option button pulse effect on hover */
+    .option-button:before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: radial-gradient(circle at center, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0) 70%);
+      opacity: 0;
+      transition: opacity 0.5s;
+    }
+    
+    .option-button:hover:before {
+      opacity: 1;
+      animation: pulse-subtle 2s infinite;
+    }
+    
+    @keyframes pulse-subtle {
+      0% {
+        opacity: 0.2;
+        transform: scale(0.95);
+      }
+      50% {
+        opacity: 0.3;
+        transform: scale(1);
+      }
+      100% {
+        opacity: 0.2;
+        transform: scale(0.95);
+      }
+    }
+    
+    .option-button.selected {
+      border-color: var(--bcg-green);
+      background-color: #222222;
+      box-shadow: 0 6px 12px rgba(20, 123, 88, 0.3), 0 0 0 1px var(--bcg-green);
+    }
+    
+    /* Add checkmark to selected options */
+    .option-button.selected:after {
+      content: '✓';
+      position: absolute;
+      right: 1.5rem;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--bcg-green);
+      font-size: 1.2rem;
+      font-weight: bold;
+    }
+    
+    .bcg-info-screen {
+      background-color: var(--bcg-green);
+      color: white;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      min-height: 400px;
+      position: relative;
+      overflow: hidden;
+      box-shadow: 0 15px 35px rgba(0, 0, 0, 0.5), 0 8px 20px rgba(0, 0, 0, 0.4);
+    }
+    
+    .bcg-info-screen:before {
+      content: '';
+      position: absolute;
+      top: -20px;
+      right: -20px;
+      width: 120px;
+      height: 120px;
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 50%;
+      pointer-events: none;
+      z-index: 0;
+    }
+    
+    .bcg-info-screen:after {
+      content: '';
+      position: absolute;
+      bottom: -40px;
+      left: -40px;
+      width: 180px;
+      height: 180px;
+      background: rgba(255, 255, 255, 0.05);
+      border-radius: 50%;
+      pointer-events: none;
+      z-index: 0;
+    }
+    
+    /* Add floating elements to BCG info screen */
+    .floating-dots {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      top: 0;
+      left: 0;
+      overflow: hidden;
+      z-index: 0;
+    }
+    
+    .dot {
+      position: absolute;
+      background-color: rgba(255, 255, 255, 0.1);
+      border-radius: 50%;
+    }
+    
+    .bcg-info-content {
+      flex-grow: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      padding: 2rem 0;
+      position: relative;
+      z-index: 1;
+    }
+    
+    .bcg-info-screen h2 {
+      font-family: 'Helvetica Neue', Arial, sans-serif;
+      font-weight: 300;
+      font-size: 1.8rem;
+      line-height: 1.5;
+      margin-bottom: 2rem;
+      opacity: 0;
+      transform: translateY(10px);
+      animation: fadeIn 0.6s forwards 0.3s;
+    }
+    
+    @keyframes fadeIn {
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+    
+    .trivia-card {
+      background-color: #7EE267;
+      border: none;
+      border-radius: 20px;
+      padding: 1.5rem;
+      margin: 1.5rem 0;
+      box-shadow: 0 6px 15px rgba(0, 0, 0, 0.2);
+      position: relative;
+      overflow: hidden;
+      transform: translateY(20px);
+      opacity: 0;
+      animation: slideUp 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+    }
+    
+    @keyframes slideUp {
+      to {
+        transform: translateY(0);
+        opacity: 1;
+      }
+    }
+    
+    .trivia-title {
+      color: #0a3b2c;
+      font-weight: 600;
+      margin-bottom: 0.75rem;
+      position: relative;
+      z-index: 1;
+    }
+    
+    .trivia-content {
+      color: #0a3b2c;
+      font-size: 0.95rem;
+      line-height: 1.5;
+      position: relative;
+      z-index: 1;
+    }
+    
+    .trivia-card:before {
+      content: '';
+      position: absolute;
+      right: -10px;
+      bottom: -10px;
+      width: 80px;
+      height: 80px;
+      background-color: rgba(255, 255, 255, 0.2);
+      border-radius: 50%;
+    }
+    
+    .result-card {
+      text-align: center;
+      border: 1px solid var(--gray-300);
+      border-radius: 0.5rem;
+      padding: 1.5rem;
+      margin-bottom: 1.5rem;
+      transition: transform 0.4s, box-shadow 0.4s;
+    }
+    
+    .result-card:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+    }
+    
+    .result-title {
+      font-size: 1.2rem;
+      font-weight: 300;
+      margin-bottom: 0.5rem;
+    }
+    
+    .result-value {
+      font-size: 2rem;
+      font-weight: bold;
+      color: var(--bcg-green);
+      margin-bottom: 0.25rem;
+      opacity: 0;
+      transform: scale(0.5);
+      animation: popIn 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+    }
+    
+    @keyframes popIn {
+      to {
+        opacity: 1;
+        transform: scale(1);
+      }
+    }
+    
+    .result-score {
+      font-size: 2.5rem;
+      font-weight: bold;
+      margin-bottom: 1rem;
+      opacity: 0;
+      animation: popIn 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards 0.2s;
+    }
+    
+    .dimension-label {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 0.25rem;
+      font-weight: 500;
+    }
+    
+    .dimension-bar {
+      height: 1rem;
+      background-color: var(--gray-200);
+      border-radius: 0.5rem;
+      overflow: hidden;
+      margin-bottom: 0.5rem;
+      position: relative;
+    }
+    
+    .dimension-fill {
+      height: 100%;
+      border-radius: 0.5rem;
+      width: 0;
+      transition: width 1.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    }
+    
+    /* Animated dimension bar */
+    .dimension-fill:after {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, 
+                 rgba(255, 255, 255, 0) 0%, 
+                 rgba(255, 255, 255, 0.3) 50%, 
+                 rgba(255, 255, 255, 0) 100%);
+      animation: shine-bar 3s infinite;
+      opacity: 0;
+    }
+    
+    @keyframes shine-bar {
+      0% {
+        transform: translateX(-100%);
+        opacity: 0.7;
+      }
+      100% {
+        transform: translateX(100%);
+        opacity: 0;
+      }
+    }
+    
+    .dimension-description {
+      font-size: 0.9rem;
+      color: var(--gray-600);
+      margin-bottom: 1.5rem;
+    }
+    
+    .screen {
+      display: none;
+    }
+    
+    .screen.active {
+      display: block;
+      animation: screenFadeIn 0.5s ease-out;
+    }
+    
+    @keyframes screenFadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(10px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+    
+    .button-group {
+      display: flex;
+      gap: 1rem;
+      justify-content: center;
+    }
+    
+    .secondary-button {
+      background-color: var(--white);
+      color: var(--black);
+      border: 1px solid var(--gray-300);
+      transition: all 0.3s;
+    }
+    
+    .secondary-button:hover {
+      border-color: var(--gray-600);
+      background-color: var(--gray-100);
+    }
+
+    .video-container {
+      margin: 1.5rem -2rem;
+      overflow: hidden;
+      position: relative;
+      width: calc(100% + 4rem);
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+      padding-top: 56.25%; /* 16:9 Aspect Ratio */
+      background-color: #000;
+    }
+    
+    .video-fallback {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      background-color: var(--bcg-green);
+      color: white;
+    }
+    
+    .ai-animation-placeholder {
+      position: relative;
+      width: 120px;
+      height: 120px;
+      margin-bottom: 20px;
+    }
+    
+    .pulse-circle {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      border-radius: 50%;
+      background-color: rgba(255, 255, 255, 0.2);
+      animation: pulse 2s infinite;
+    }
+    
+    .ai-icon {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      font-size: 36px;
+      font-weight: bold;
+    }
+    
+    .fallback-text {
+      font-size: 18px;
+      font-weight: 300;
+    }
+    
+    @keyframes pulse {
+      0% {
+        transform: scale(0.95);
+        opacity: 0.7;
+      }
+      50% {
+        transform: scale(1.05);
+        opacity: 0.3;
+      }
+      100% {
+        transform: scale(0.95);
+        opacity: 0.7;
+      }
+    }
+    
+    ul {
+      margin-left: 1.5rem;
+      margin-bottom: 1.5rem;
+    }
+    
+    /* Highlight appearing animation */
+    .highlight-text {
+      position: relative;
+      display: inline-block;
+    }
+    
+    .highlight-text:after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      height: 30%;
+      background-color: rgba(126, 226, 103, 0.3);
+      z-index: -1;
+      transform: scaleX(0);
+      transform-origin: right;
+      transition: transform 0.4s cubic-bezier(0.86, 0, 0.07, 1);
+    }
+    
+    .highlight-text.animate:after {
+      transform: scaleX(1);
+      transform-origin: left;
+    }
+  </style>
+</head>
+<body>
+  <!-- Background Animation Container -->
+  <div class="bg-animation-container" id="bg-animation"></div>
+  
+  <div class="container">
+    <!-- Introduction Screen -->
+    <div id="screen-intro" class="screen active">
+      <div class="card">
+        <h1><span class="highlight-text">The augmented consultant</span></h1>
+        <h2>AI readiness assessment</h2>
+        
+        <!-- BCG AI Video with Fallback -->
+        <div class="video-container">
+          <iframe 
+            src="https://media-publications.bcg.com/flash/banners/AI_VI_2_Hero_Graphic_Widescreen_2.mp4" 
+            frameborder="0" 
+            allowfullscreen 
+            style="position: absolute; top: 0; left: 0; width: 100%; height: 100%;">
+          </iframe>
+          <div class="video-fallback">
+            <div class="ai-animation-placeholder">
+              <div class="pulse-circle"></div>
+              <div class="ai-icon">AI</div>
+            </div>
+            <p class="fallback-text">BCG AI Transformation Journey</p>
+          </div>
+        </div>
+        
+        <p>Welcome to your personal AI readiness assessment. This interactive exercise will help you reflect on your position regarding AI adoption both within BCG and as an offering to clients.</p>
+        
+        <p>This assessment:</p>
+        <ul>
+          <li>Takes approximately <strong>10-15 minutes</strong> to complete</li>
+          <li>Consists of 12 thought-provoking questions</li>
+          <li>Will provide personalized insights about your AI readiness</li>
+          <li>Is confidential and for your professional development</li>
+        </ul>
+        
+        <div class="form-group">
+          <label for="user-name">Your name</label>
+          <input type="text" id="user-name" placeholder="Enter your name">
+        </div>
+        
+        <div class="form-group">
+          <label for="user-email">Your email</label>
+          <input type="email" id="user-email" placeholder="Enter your email">
+        </div>
+        
+        <button id="btn-start" disabled>Start Assessment</button>
+      </div>
+    </div>
+
+    <!-- BCG Info Screen Template -->
+    <div id="screen-bcg-info" class="screen">
+      <div class="card bcg-info-screen">
+        <div class="floating-dots" id="floating-dots"></div>
+        <div class="bcg-info-content">
+          <h2 id="bcg-info-text"></h2>
+          <p id="bcg-info-author" style="text-align: right; margin-top: 2rem; font-weight: 500;"></p>
+        </div>
+        <button id="btn-continue">Continue</button>
+      </div>
+    </div>
+    
+    <!-- Question Screen Template -->
+    <div id="screen-question" class="screen">
+      <div class="card">
+        <div class="progress-container">
+          <h3 id="question-counter"></h3>
+          
+          <!-- Replace traditional progress bar with journey map -->
+          <div class="journey-map" id="journey-map">
+            <div class="journey-path">
+              <div class="journey-progress" id="journey-progress"></div>
+              <!-- Journey stages will be added dynamically via JS -->
+            </div>
+            <div class="journey-icon" id="journey-icon">
+              <span>AI</span>
+            </div>
+          </div>
+        </div>
+        
+        <h3 id="question-text"></h3>
+        
+        <div id="options-container"></div>
+        
+        <div id="trivia-container" class="trivia-card" style="display: none;">
+          <div class="trivia-title">Did you know?</div>
+          <div id="trivia-text" class="trivia-content"></div>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Results Screen -->
+    <div id="screen-results" class="screen">
+      <div class="card">
+        <h1>Your AI readiness results</h1>
+        <p>Based on your responses, here is your AI readiness profile:</p>
+        
+        <div class="result-card">
+          <div class="result-title">Overall position</div>
+          <div id="result-position" class="result-value"></div>
+          <div id="result-score" class="result-score"></div>
+          <p>This represents your overall AI readiness</p>
+        </div>
+        
+        <h3>Dimension breakdown</h3>
+        
+        <div>
+          <div class="dimension-label">
+            <span>The consultant's journey</span>
+            <span id="journey-score"></span>
+          </div>
+          <div class="dimension-bar">
+            <div id="journey-fill" class="dimension-fill" style="background-color: var(--journey-color);"></div>
+          </div>
+          <p class="dimension-description">How ready you are to personally adopt AI in your work</p>
+          
+          <div class="dimension-label">
+            <span>The client experience</span>
+            <span id="client-score"></span>
+          </div>
+          <div class="dimension-bar">
+            <div id="client-fill" class="dimension-fill" style="background-color: var(--client-color);"></div>
+          </div>
+          <p class="dimension-description">Your readiness to incorporate AI into client offerings</p>
+          
+          <div class="dimension-label">
+            <span>Organizational metamorphosis</span>
+            <span id="org-score"></span>
+          </div>
+          <div class="dimension-bar">
+            <div id="org-fill" class="dimension-fill" style="background-color: var(--org-color);"></div>
+          </div>
+          <p class="dimension-description">Your perspective on BCG's organizational AI transformation</p>
+        </div>
+        
+        <div id="recommendations" style="background-color: var(--gray-100); padding: 1rem; border-radius: 0.5rem; margin: 1.5rem 0;">
+          <h3>What this means for you</h3>
+          <p>As an <strong id="position-type"></strong>, you are positioned to:</p>
+          <ul id="recommendations-list"></ul>
+        </div>
+        
+        <button id="btn-submit">Submit Results</button>
+      </div>
+    </div>
+    
+    <!-- Thank You Screen -->
+    <div id="screen-thank-you" class="screen">
+      <div class="card" style="text-align: center;">
+        <div style="width: 4rem; height: 4rem; background-color: #d1fae5; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 1.5rem;">
+          <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+            <polyline points="22 4 12 14.01 9 11.01"></polyline>
+          </svg>
+        </div>
+        
+        <h1>Thank you for completing the assessment!</h1>
+        <p>Your results have been submitted and will help us better understand how to support BCG's AI transformation journey.</p>
+        
+        <div style="background-color: var(--gray-100); padding: 1.5rem; border-radius: 0.5rem; margin: 1.5rem 0; text-align: left;">
+          <h3>Next steps</h3>
+          <p>Based on your assessment, we recommend:</p>
+          <ul>
+            <li>Explore BCG's AI learning resources on the intranet</li>
+            <li>Connect with the AI Center of Excellence for personalized guidance</li>
+            <li>Join upcoming AI workshops and training sessions</li>
+          </ul>
+        </div>
+        
+        <div class="button-group">
+          <button id="btn-restart" class="secondary-button" style="width: auto;">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display: inline; margin-right: 0.5rem; vertical-align: text-bottom;">
+              <path d="M21.5 2v6h-6M2.5 22v-6h6M2 11.5a10 10 0 0 1 18.8-4.3M22 12.5a10 10 0 0 1-18.8 4.2"></path>
+            </svg>
+            Retake Assessment
+          </button>
+          
+          <button id="btn-report" style="width: auto;">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display: inline; margin-right: 0.5rem; vertical-align: text-bottom;">
+              <path d="M3 3v18h18"></path>
+              <path d="M18 17V9"></path>
+              <path d="M13 17v-5"></path>
+              <path d="M8 17v-2"></path>
+            </svg>
+            View Detailed Report
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Global app state
+    const app = {
+      currentStep: 0,
+      screens: {
+        intro: document.getElementById('screen-intro'),
+        bcgInfo: document.getElementById('screen-bcg-info'),
+        question: document.getElementById('screen-question'),
+        results: document.getElementById('screen-results'),
+        thankYou: document.getElementById('screen-thank-you')
+      },
+      elements: {
+        // Form inputs
+        nameInput: document.getElementById('user-name'),
+        emailInput: document.getElementById('user-email'),
+        
+        // Buttons
+        startButton: document.getElementById('btn-start'),
+        continueButton: document.getElementById('btn-continue'),
+        submitButton: document.getElementById('btn-submit'),
+        restartButton: document.getElementById('btn-restart'),
+        reportButton: document.getElementById('btn-report'),
+        
+        // BCG Info
+        bcgInfoText: document.getElementById('bcg-info-text'),
+        bcgInfoAuthor: document.getElementById('bcg-info-author'),
+        floatingDots: document.getElementById('floating-dots'),
+        
+        // Question
+        questionCounter: document.getElementById('question-counter'),
+        journeyMap: document.getElementById('journey-map'),
+        journeyProgress: document.getElementById('journey-progress'),
+        journeyIcon: document.getElementById('journey-icon'),
+        questionText: document.getElementById('question-text'),
+        optionsContainer: document.getElementById('options-container'),
+        triviaContainer: document.getElementById('trivia-container'),
+        triviaText: document.getElementById('trivia-text'),
+        
+        // Results
+        resultPosition: document.getElementById('result-position'),
+        resultScore: document.getElementById('result-score'),
+        journeyScore: document.getElementById('journey-score'),
+        journeyFill: document.getElementById('journey-fill'),
+        clientScore: document.getElementById('client-score'),
+        clientFill: document.getElementById('client-fill'),
+        orgScore: document.getElementById('org-score'),
+        orgFill: document.getElementById('org-fill'),
+        positionType: document.getElementById('position-type'),
+        recommendationsList: document.getElementById('recommendations-list'),
+        
+        // Background Animation
+        bgAnimation: document.getElementById('bg-animation')
+      },
+      data: {
+        currentQuestionIndex: 0,
+        responses: {},
+        userData: {
+          name: '',
+          email: ''
+        },
+        startTime: null,
+        // Add journey stages data
+        journeyStages: [
+          { position: 0, label: 'Start', category: 'start' },
+          { position: 25, label: 'Consultant Journey', category: 'consultant_journey' },
+          { position: 50, label: 'Client Experience', category: 'client_experience' },
+          { position: 75, label: 'Org Transformation', category: 'organizational_change' },
+          { position: 100, label: 'Results', category: 'end' }
+        ],
+        // Track background animation complexity
+        bgComplexity: 1
+      }
+    };
+
+    // BCG insights
+    const bcgInsights = [
+      {
+        text: "The most valuable skill for consultants in the AI era is not technical expertise, but the ability to ask profound questions that even the most advanced AI cannot.",
+        author: "Christoph Schweizer, CEO of BCG"
+      },
+      {
+        text: "AI will not replace consultants. But consultants who use AI will replace those who do not.",
+        author: "Adapted from Richard Susskind"
+      },
+      {
+        text: "The greatest value of AI is not in automating what we already do, but in revealing what was previously impossible to see.",
+        author: "Francois Candelon, Global Director, BCG Henderson Institute"
+      },
+      {
+        text: "We are entering an era where the consultant role shifts from providing answers to curating questions, from delivering analysis to creating synthesis.",
+        author: "Sylvain Duranton, Global Leader, BCG GAMMA"
+      },
+      {
+        text: "In consulting, the human elements of empathy, judgment, and creativity become more valuable, not less, as AI handles the analytical heavy lifting.",
+        author: "Rich Lesser, Global Chair, BCG"
+      },
+      {
+        text: "The firms that will thrive are not those with the best AI, but those who best reimagine their human-AI partnership.",
+        author: "Karalee Close, Global Leader, BCG Technology Advantage"
+      },
+      {
+        text: "BCG's AI adoption framework centers on bringing human expertise and AI capabilities together, creating opportunities that neither could achieve alone.",
+        author: "BCG Digital Transformation Practice"
+      },
+      {
+        text: "At BCG, we see AI not as a replacement for strategy, but as a catalyst for strategic reinvention across industries.",
+        author: "BCG Strategy Practice"
+      },
+      {
+        text: "The consultant's journey with AI begins with personal curiosity and culminates in the ability to reimagine client businesses through an AI-enabled lens.",
+        author: "BCG Learning & Development"
+      },
+      {
+        text: "Our research shows that companies where leadership actively models AI adoption see 3x faster implementation and 2.5x higher ROI on AI investments.",
+        author: "BCG Henderson Institute"
+      },
+      {
+        text: "The key to successful AI implementation is not technology but transformation—changing how people work, make decisions, and create value.",
+        author: "BCG GAMMA"
+      },
+      {
+        text: "In the AI era, the consultant's unique value lies at the intersection of domain expertise, business acumen, and technological understanding.",
+        author: "BCG Consultant Development Program"
+      },
+      {
+        text: "The consultant who understands both the potential and limitations of AI will be able to identify the highest-value applications for clients.",
+        author: "BCG AI Practice"
+      },
+      {
+        text: "Digital transformation only succeeds when it embraces both the science of AI and the art of change management.",
+        author: "BCG Change Management Lead"
+      },
+      {
+        text: "Our most successful AI implementations began with a clear understanding of the business problem, not the technology solution.",
+        author: "BCG Technology Advantage"
+      },
+      {
+        text: "The challenge is not just teaching consultants about AI, but teaching AI tools about consulting—embedding our expertise into the technology itself.",
+        author: "BCG X"
+      },
+      {
+        text: "AI doesn't just speed up analysis—it fundamentally changes what's possible in terms of insight generation and solution development.",
+        author: "BCG Analytics"
+      },
+      {
+        text: "Future client value will be created at the intersection where consultant judgment meets AI-powered capabilities.",
+        author: "BCG Strategic Planning"
+      },
+      {
+        text: "The most profound AI use cases in consulting are not those that replace human judgment, but those that elevate it.",
+        author: "BCG Senior Partner"
+      },
+      {
+        text: "AI literacy will soon be as fundamental to consulting as financial literacy has been for generations.",
+        author: "BCG Learning Academy"
+      },
+      {
+        text: "The differentiator for next-generation consultants will be their ability to integrate AI-generated insights with strategic intuition.",
+        author: "BCG Leadership Development"
+      },
+      {
+        text: "AI implementation is less about optimizing algorithms and more about reimagining processes and human workflows.",
+        author: "BCG Operations Practice"
+      },
+      {
+        text: "Rather than asking 'What can AI do?', successful consultants ask 'What should AI do?' to unlock client value.",
+        author: "BCG AI Ethics Committee"
+      },
+      {
+        text: "In the coming decade, every BCG case will have an AI component—not because we mandate it, but because it will be essential to competitive advantage.",
+        author: "BCG Global Strategy"
+      }
+    ];
+
+    // Assessment questions
+    const questions = [
+      // Pillar 1: The Consultant's Journey
+      {
+        id: "personal_ai_usage",
+        text: "How do you currently use AI tools in your consulting work?",
+        category: "consultant_journey",
+        options: [
+          { id: "p1", text: "I actively use multiple AI tools daily and continuously experiment with new ones", score: 5 },
+          { id: "p2", text: "I use some AI tools regularly for specific tasks", score: 4 },
+          { id: "p3", text: "I have tried AI tools occasionally but have not integrated them into my workflow", score: 3 },
+          { id: "p4", text: "I rarely use AI tools in my work", score: 2 },
+          { id: "p5", text: "I avoid using AI tools and prefer traditional methods", score: 1 }
+        ],
+        trivia: "A 2023 survey found that consultants who regularly use AI tools reported a 27% increase in productivity and 34% faster project delivery times."
+      },
+      {
+        id: "ai_confidence",
+        text: "How confident are you in explaining how AI works to others?",
+        category: "consultant_journey",
+        options: [
+          { id: "p16", text: "I can explain complex AI concepts including technical details of different approaches", score: 5 },
+          { id: "p17", text: "I can clearly explain the main AI concepts and applications in business contexts", score: 4 },
+          { id: "p18", text: "I understand the basics but sometimes struggle to explain more complex aspects", score: 3 },
+          { id: "p19", text: "I have a limited understanding and prefer to let others explain AI", score: 2 },
+          { id: "p20", text: "I avoid conversations about AI technical aspects altogether", score: 1 }
+        ],
+        trivia: "BCG research shows that consultants who can effectively explain AI concepts to non-technical stakeholders achieve 52% higher client satisfaction scores."
+      },
+      {
+        id: "learning_approach",
+        text: "What best describes your approach to developing AI literacy?",
+        category: "consultant_journey",
+        options: [
+          { id: "p11", text: "I proactively seek out AI learning opportunities and share knowledge with colleagues", score: 5 },
+          { id: "p12", text: "I regularly invest time in learning about AI developments relevant to my work", score: 4 },
+          { id: "p13", text: "I participate in required AI training but rarely pursue additional learning", score: 3 },
+          { id: "p14", text: "I learn about AI only when necessary for specific projects", score: 2 },
+          { id: "p15", text: "I prefer to focus on my existing expertise rather than learning about AI", score: 1 }
+        ],
+        trivia: "BCG consultants who dedicate at least 2 hours weekly to AI skill development are 3x more likely to be staffed on AI-focused client projects."
+      },
+      {
+        id: "ai_experimentation",
+        text: "How often do you experiment with new AI tools or approaches?",
+        category: "consultant_journey",
+        options: [
+          { id: "p21", text: "I consistently allocate time to test and evaluate new AI tools each week", score: 5 },
+          { id: "p22", text: "I try new AI tools monthly and evaluate their potential for my work", score: 4 },
+          { id: "p23", text: "I occasionally try new AI tools when they seem particularly relevant", score: 3 },
+          { id: "p24", text: "I rarely experiment with new AI tools beyond what is required", score: 2 },
+          { id: "p25", text: "I leave AI experimentation to specialists and technology teams", score: 1 }
+        ],
+        trivia: "Top-performing BCG consultants report spending 10-15% of their personal development time experimenting with emerging technologies."
+      },
+      
+      // Pillar 2: The Client Experience
+      {
+        id: "client_conversations",
+        text: "How comfortable are you discussing AI opportunities with clients?",
+        category: "client_experience",
+        options: [
+          { id: "c1", text: "I confidently lead strategic AI conversations and can articulate sophisticated AI applications", score: 5 },
+          { id: "c2", text: "I am comfortable discussing most AI applications and their business impact", score: 4 },
+          { id: "c3", text: "I can discuss basic AI concepts but defer to specialists for technical details", score: 3 },
+          { id: "c4", text: "I avoid initiating AI conversations with clients", score: 2 },
+          { id: "c5", text: "I actively steer conversations away from AI topics", score: 1 }
+        ]
+      },
+      {
+        id: "client_roi",
+        text: "How do you approach demonstrating ROI for AI investments to clients?",
+        category: "client_experience",
+        options: [
+          { id: "c16", text: "I use sophisticated models that capture both direct and indirect value across time horizons", score: 5 },
+          { id: "c17", text: "I have a structured approach to quantifying various benefits including risk reduction", score: 4 },
+          { id: "c18", text: "I focus primarily on direct cost savings and efficiency metrics", score: 3 },
+          { id: "c19", text: "I rely mostly on case studies and examples rather than custom ROI models", score: 2 },
+          { id: "c20", text: "I struggle to articulate the specific ROI of AI investments", score: 1 }
+        ],
+        trivia: "BCG's AI ROI models now incorporate 18 different value drivers across financial, operational, and strategic categories."
+      },
+      {
+        id: "client_resistance",
+        text: "How do you respond when clients express concerns about AI solutions?",
+        category: "client_experience",
+        options: [
+          { id: "c11", text: "I empathetically address concerns while confidently articulating the balanced case for AI adoption", score: 5 },
+          { id: "c12", text: "I acknowledge concerns and present evidence of AI benefits", score: 4 },
+          { id: "c13", text: "I listen to concerns and involve AI specialists to address them", score: 3 },
+          { id: "c14", text: "I acknowledge their concerns and suggest alternative non-AI approaches", score: 2 },
+          { id: "c15", text: "I tend to agree with client concerns about AI", score: 1 }
+        ]
+      },
+      {
+        id: "client_readiness",
+        text: "How do you assess a client's organizational readiness for AI adoption?",
+        category: "client_experience",
+        options: [
+          { id: "c21", text: "I use a comprehensive framework evaluating technology, processes, skills, and culture", score: 5 },
+          { id: "c22", text: "I evaluate key readiness factors including data infrastructure and leadership commitment", score: 4 },
+          { id: "c23", text: "I conduct basic assessments focused on technical capabilities and use cases", score: 3 },
+          { id: "c24", text: "I rely primarily on discussions with key stakeholders and observations", score: 2 },
+          { id: "c25", text: "I don't typically assess AI readiness specifically", score: 1 }
+        ],
+        trivia: "BCG's AI Readiness Index evaluates organizations across 26 capabilities in 5 domains to predict implementation success."
+      },
+      
+      // Pillar 3: Organizational Metamorphosis
+      {
+        id: "org_culture",
+        text: "How do you see AI impacting BCG's organizational culture?",
+        category: "organizational_change",
+        options: [
+          { id: "o1", text: "AI will revolutionize our culture, creating a more innovative, data-driven organization", score: 5 },
+          { id: "o2", text: "AI will significantly enhance our culture while preserving our core values", score: 4 },
+          { id: "o3", text: "AI will change some aspects of how we work but will not fundamentally alter our culture", score: 3 },
+          { id: "o4", text: "AI might disrupt important aspects of our culture and ways of working", score: 2 },
+          { id: "o5", text: "AI threatens core aspects of BCG's culture and identity", score: 1 }
+        ]
+      },
+      {
+        id: "org_talent",
+        text: "What is your perspective on BCG's AI talent strategy?",
+        category: "organizational_change",
+        options: [
+          { id: "o16", text: "We should transform all consultants into AI-fluent professionals while also hiring AI specialists", score: 5 },
+          { id: "o17", text: "We should prioritize developing AI capabilities in existing consultants across all levels", score: 4 },
+          { id: "o18", text: "We should focus on hiring technical AI specialists while providing basic training to consultants", score: 3 },
+          { id: "o19", text: "We should create dedicated AI teams that support traditional consulting teams", score: 2 },
+          { id: "o20", text: "We should maintain separation between technical AI roles and traditional consulting roles", score: 1 }
+        ],
+        trivia: "BCG's most successful AI implementations involve blended teams where traditional consultants and technical specialists collaborate throughout the project lifecycle."
+      },
+      {
+        id: "knowledge_sharing",
+        text: "How should BCG approach knowledge management in the AI era?",
+        category: "organizational_change",
+        options: [
+          { id: "o6", text: "We should completely reimagine knowledge management with AI at the core of a new system", score: 5 },
+          { id: "o7", text: "We should integrate AI throughout our existing knowledge systems", score: 4 },
+          { id: "o8", text: "We should add AI features to our knowledge system where they clearly add value", score: 3 },
+          { id: "o9", text: "We should proceed cautiously with limited AI in knowledge management", score: 2 },
+          { id: "o10", text: "We should maintain our current knowledge approach with minimal AI integration", score: 1 }
+        ],
+        trivia: "BCG's internal AI-powered knowledge system has reduced research time by 62% and improved the discovery of relevant past work by 48%."
+      },
+      {
+        id: "firm_strategy",
+        text: "What role should AI play in BCG's long-term strategy?",
+        category: "organizational_change",
+        options: [
+          { id: "o11", text: "AI should be the primary driver reshaping our entire business model and offerings", score: 5 },
+          { id: "o12", text: "AI should be a major strategic pillar alongside our traditional strengths", score: 4 },
+          { id: "o13", text: "AI should be an important tool supporting our existing strategy", score: 3 },
+          { id: "o14", text: "AI should be a specialized capability rather than a core strategic element", score: 2 },
+          { id: "o15", text: "AI should have limited influence on our strategic direction", score: 1 }
+        ]
+      }
+    ];
+
+    // Recommendations based on scores
+    const recommendations = {
+      champion: [
+        "Lead AI innovation initiatives within your practice area",
+        "Serve as an AI ambassador when working with clients",
+        "Contribute to BCG's AI strategy development"
+      ],
+      enthusiast: [
+        "Actively engage with AI tools in your consulting work",
+        "Confidently discuss AI opportunities with clients",
+        "Support the firm's AI transformation journey"
+      ],
+      pragmatist: [
+        "Selectively adopt AI tools where you see clear value",
+        "Partner with AI specialists on client projects when needed",
+        "Gradually increase your AI literacy through practice"
+      ],
+      cautious: [
+        "Focus on understanding AI fundamentals before adoption",
+        "Work with AI-experienced colleagues on projects",
+        "Identify specific areas where AI could enhance your work"
+      ],
+      resistant: [
+        "Begin with AI awareness training and education",
+        "Observe AI implementations before active participation",
+        "Address specific concerns about AI adoption"
+      ]
+    };
+
+    // Initialize the application
+    document.addEventListener("DOMContentLoaded", function() {
+      initApp();
+      
+      // Initialize background animation
+      initBackgroundAnimation();
+      
+      // Initialize journey map
+      initJourneyMap();
+      
+      // Initialize text highlights
+      initTextHighlights();
+    });
+
+    // Initialize text highlights
+    function initTextHighlights() {
+      const highlights = document.querySelectorAll('.highlight-text');
+      
+      setTimeout(() => {
+        highlights.forEach(highlight => {
+          highlight.classList.add('animate');
+        });
+      }, 500);
+    }
+
+    // Initialize background animation
+    function initBackgroundAnimation() {
+      // Clear any existing elements
+      app.elements.bgAnimation.innerHTML = '';
+      
+      // Initial complexity level - will increase as user progresses
+      createBackgroundElements(app.data.bgComplexity);
+    }
+    
+    // Create background animation elements based on complexity
+    function createBackgroundElements(complexity) {
+      // Clear previous elements
+      app.elements.bgAnimation.innerHTML = '';
+      
+      // Number of elements based on complexity (1-5 scale)
+      const gridLines = 2 * complexity;
+      const particles = 5 * complexity;
+      const circles = 2 * complexity;
+      
+      // Add grid lines
+      for (let i = 0; i < gridLines; i++) {
+        // Horizontal lines
+        const hLine = document.createElement('div');
+        hLine.className = 'bg-grid-line horizontal';
+        hLine.style.top = `${Math.random() * 100}%`;
+        hLine.style.opacity = Math.random() * 0.1 + 0.05;
+        app.elements.bgAnimation.appendChild(hLine);
+        
+        // Vertical lines
+        const vLine = document.createElement('div');
+        vLine.className = 'bg-grid-line vertical';
+        vLine.style.left = `${Math.random() * 100}%`;
+        vLine.style.opacity = Math.random() * 0.1 + 0.05;
+        app.elements.bgAnimation.appendChild(vLine);
+      }
+      
+      // Add particles
+      for (let i = 0; i < particles; i++) {
+        const particle = document.createElement('div');
+        particle.className = 'bg-particle';
+        
+        // Random size between 2px and 8px based on complexity
+        const size = (Math.random() * 3 + 1) * complexity;
+        particle.style.width = `${size}px`;
+        particle.style.height = `${size}px`;
+        
+        // Random position
+        particle.style.left = `${Math.random() * 100}%`;
+        particle.style.top = `${Math.random() * 100}%`;
+        
+        // Random opacity
+        particle.style.opacity = Math.random() * 0.5 + 0.1;
+        
+        app.elements.bgAnimation.appendChild(particle);
+      }
+      
+      // Add growing circles
+      for (let i = 0; i < circles; i++) {
+        const circle = document.createElement('div');
+        circle.className = 'bg-circle';
+        
+        // Size based on complexity
+        const size = (Math.random() * 150 + 100) * complexity;
+        circle.style.width = `${size}px`;
+        circle.style.height = `${size}px`;
+        
+        // Random position
+        circle.style.left = `${Math.random() * 100}%`;
+        circle.style.top = `${Math.random() * 100}%`;
+        
+        // Random delay
+        circle.style.animationDelay = `${Math.random() * 5}s`;
+        
+        app.elements.bgAnimation.appendChild(circle);
+      }
+    }
+    
+    // Initialize floating dots in BCG info screen
+    function initFloatingDots() {
+      app.elements.floatingDots.innerHTML = '';
+      
+      // Create floating dots
+      for (let i = 0; i < 15; i++) {
+        const dot = document.createElement('div');
+        dot.className = 'dot';
+        
+        // Random size
+        const size = Math.random() * 6 + 2;
+        dot.style.width = `${size}px`;
+        dot.style.height = `${size}px`;
+        
+        // Random position
+        dot.style.left = `${Math.random() * 100}%`;
+        dot.style.top = `${Math.random() * 100}%`;
+        
+        // Random animation
+        const animDuration = Math.random() * 20 + 10;
+        const animDelay = Math.random() * 5;
+        
+        dot.style.animation = `float ${animDuration}s infinite ${animDelay}s`;
+        
+        // Add floating animation
+        dot.animate([
+          { transform: 'translate(0, 0)' },
+          { transform: `translate(${Math.random() * 30 - 15}px, ${Math.random() * 30 - 15}px)` },
+          { transform: 'translate(0, 0)' }
+        ], {
+          duration: animDuration * 1000,
+          iterations: Infinity
+        });
+        
+        app.elements.floatingDots.appendChild(dot);
+      }
+    }
+    
+    // Initialize journey map
+    function initJourneyMap() {
+      // Clear existing stages
+      while (app.elements.journeyMap.querySelector('.journey-stage')) {
+        app.elements.journeyMap.removeChild(app.elements.journeyMap.querySelector('.journey-stage'));
+      }
+      
+      // Create journey stages
+      app.data.journeyStages.forEach((stage, index) => {
+        const stageElement = document.createElement('div');
+        stageElement.className = 'journey-stage';
+        stageElement.style.left = `${stage.position}%`;
+        
+        // Add stage label
+        const labelElement = document.createElement('div');
+        labelElement.className = 'journey-stage-label';
+        labelElement.textContent = stage.label;
+        stageElement.appendChild(labelElement);
+        
+        // Mark first stage as active
+        if (index === 0) {
+          stageElement.classList.add('active');
+        }
+        
+        app.elements.journeyMap.appendChild(stageElement);
+      });
+      
+      // Position journey icon at start
+      app.elements.journeyIcon.style.left = '0%';
+    }
+    
+    // Update journey map based on current progress
+    function updateJourneyMap() {
+      const totalQuestions = questions.length;
+      const currentIndex = app.data.currentQuestionIndex;
+      const progress = (currentIndex / totalQuestions) * 100;
+      
+      // Update progress bar
+      app.elements.journeyProgress.style.width = `${progress}%`;
+      
+      // Update journey icon position
+      app.elements.journeyIcon.style.left = `${progress}%`;
+      
+      // Update active stage
+      const stages = app.elements.journeyMap.querySelectorAll('.journey-stage');
+      stages.forEach((stage, index) => {
+        const stagePosition = app.data.journeyStages[index].position;
+        
+        if (progress >= stagePosition) {
+          stage.classList.add('completed');
+        }
+        
+        if (index > 0 && app.data.journeyStages[index-1].position <= progress && progress < stagePosition) {
+          stage.classList.add('active');
+        } else {
+          stage.classList.remove('active');
+        }
+      });
+      
+      // Update background complexity based on progress
+      const newComplexity = Math.floor(progress / 20) + 1; // 1-5 based on progress
+      
+      if (newComplexity !== app.data.bgComplexity) {
+        app.data.bgComplexity = newComplexity;
+        createBackgroundElements(app.data.bgComplexity);
+      }
+    }
+
+    // Initialize app
+    function initApp() {
+      // Add event listeners
+      app.elements.nameInput.addEventListener('input', validateUserInputs);
+      app.elements.emailInput.addEventListener('input', validateUserInputs);
+      
+      app.elements.startButton.addEventListener('click', startAssessment);
+      app.elements.continueButton.addEventListener('click', showNextQuestion);
+      app.elements.submitButton.addEventListener('click', submitResults);
+      app.elements.restartButton.addEventListener('click', restart);
+      app.elements.reportButton.addEventListener('click', viewReport);
+    }
+
+    // Validate user inputs
+    function validateUserInputs() {
+      app.data.userData.name = app.elements.nameInput.value.trim();
+      app.data.userData.email = app.elements.emailInput.value.trim();
+      
+      if (app.data.userData.name && app.data.userData.email && app.data.userData.email.includes('@')) {
+        app.elements.startButton.disabled = false;
+      } else {
+        app.elements.startButton.disabled = true;
+      }
+    }
+
+    // Show a specific screen
+    function showScreen(screenName) {
+      console.log("Showing screen:", screenName);
+      
+      // Hide all screens
+      Object.values(app.screens).forEach(screen => {
+        screen.classList.remove('active');
+      });
+      
+      // Show the requested screen
+      console.log("Screen element:", app.screens[screenName]);
+      app.screens[screenName].classList.add('active');
+    }
+
+    // Start the assessment
+    function startAssessment() {
+      console.log("Starting assessment...");
+      app.data.startTime = new Date();
+      app.data.currentQuestionIndex = 0;
+      app.data.responses = {};
+      
+      // Reset background complexity
+      app.data.bgComplexity = 1;
+      createBackgroundElements(app.data.bgComplexity);
+      
+      // Show first BCG info
+      showBCGInfo();
+    }
+
+    // Show BCG info page
+    function showBCGInfo() {
+      console.log("Showing BCG info screen...");
+      console.log("Current question index:", app.data.currentQuestionIndex);
+      console.log("BCG insights length:", bcgInsights.length);
+      
+      const insight = bcgInsights[app.data.currentQuestionIndex % bcgInsights.length];
+      console.log("Selected insight:", insight);
+      
+      app.elements.bcgInfoText.textContent = `"${insight.text}"`;
+      app.elements.bcgInfoAuthor.textContent = insight.author;
+      
+      // Initialize floating dots animation
+      initFloatingDots();
+      
+      showScreen('bcgInfo');
+    }
+
+    // Show the next question
+    function showNextQuestion() {
+      loadQuestion();
+      updateJourneyMap();
+      showScreen('question');
+    }
+
+    // Load current question
+    function loadQuestion() {
+      const question = questions[app.data.currentQuestionIndex];
+      
+      // Update question counter
+      app.elements.questionCounter.textContent = `Question ${app.data.currentQuestionIndex + 1} of ${questions.length}`;
+      
+      // Set question text
+      app.elements.questionText.textContent = question.text;
+      
+      // Clear previous options
+      app.elements.optionsContainer.innerHTML = '';
+      
+      // Add options with staggered animation
+      question.options.forEach((option, index) => {
+        const optionButton = document.createElement('button');
+        optionButton.className = 'option-button';
+        optionButton.textContent = option.text;
+        optionButton.setAttribute('data-option-id', option.id);
+        optionButton.style.opacity = 0;
+        optionButton.style.transform = 'translateY(10px)';
+        
+        // Check if this option was previously selected
+        if (app.data.responses[question.id] === option.id) {
+          optionButton.classList.add('selected');
+        }
+        
+        optionButton.addEventListener('click', function() {
+          selectOption(question.id, option.id);
+        });
+        
+        app.elements.optionsContainer.appendChild(optionButton);
+        
+        // Staggered animation
+        setTimeout(() => {
+          optionButton.style.transition = 'opacity 0.4s, transform 0.4s';
+          optionButton.style.opacity = 1;
+          optionButton.style.transform = 'translateY(0)';
+        }, 100 * index);
+      });
+      
+      // Show trivia if available
+      if (question.trivia) {
+        app.elements.triviaText.textContent = question.trivia;
+        app.elements.triviaContainer.style.display = 'block';
+      } else {
+        app.elements.triviaContainer.style.display = 'none';
+      }
+    }
+
+    // Select an option
+    function selectOption(questionId, optionId) {
+      // Save the response
+      app.data.responses[questionId] = optionId;
+      
+      // Update UI to show selected option
+      const options = app.elements.optionsContainer.querySelectorAll('.option-button');
+      options.forEach(option => {
+        if (option.getAttribute('data-option-id') === optionId) {
+          option.classList.add('selected');
+        } else {
+          option.classList.remove('selected');
+        }
+      });
+      
+      // Get the selected option score to give visual feedback
+      const question = questions.find(q => q.id === questionId);
+      const selectedOption = question.options.find(o => o.id === optionId);
+      
+      // Add ripple effect based on score (higher score = more pronounced effect)
+      const button = Array.from(options).find(opt => opt.getAttribute('data-option-id') === optionId);
+      const ripple = document.createElement('span');
+      ripple.style.position = 'absolute';
+      ripple.style.borderRadius = '50%';
+      ripple.style.transform = 'scale(0)';
+      ripple.style.backgroundColor = 'rgba(255, 255, 255, 0.3)';
+      ripple.style.width = '100%';
+      ripple.style.height = '100%';
+      ripple.style.top = '0';
+      ripple.style.left = '0';
+      ripple.style.animation = `ripple ${0.6 + selectedOption.score * 0.1}s forwards`;
+      
+      button.appendChild(ripple);
+      setTimeout(() => button.removeChild(ripple), 1000);
+      
+      // Move to next question or show results after a brief delay
+      setTimeout(() => {
+        if (app.data.currentQuestionIndex < questions.length - 1) {
+          app.data.currentQuestionIndex++;
+          showBCGInfo();
+        } else {
+          showResults();
+        }
+      }, 800);
+    }
+
+    // Calculate results
+    function calculateResults() {
+      // Categories for scoring
+      const scores = {
+        consultant_journey: 0,
+        client_experience: 0,
+        organizational_change: 0,
+        total: 0
+      };
+      
+      const counts = {
+        consultant_journey: 0,
+        client_experience: 0,
+        organizational_change: 0,
+        total: 0
+      };
+      
+      // Calculate scores based on responses
+      Object.entries(app.data.responses).forEach(([questionId, optionId]) => {
+        const question = questions.find(q => q.id === questionId);
+        if (question) {
+          const option = question.options.find(o => o.id === optionId);
+          if (option) {
+            scores[question.category] += option.score;
+            counts[question.category]++;
+            scores.total += option.score;
+            counts.total++;
+          }
+        }
+      });
+      
+      // Calculate percentage scores
+      const percentageScores = {};
+      Object.keys(scores).forEach(key => {
+        const maxScore = counts[key] * 5; // Maximum score is 5 per question
+        percentageScores[key] = maxScore > 0 ? Math.round((scores[key] / maxScore) * 100) : 0;
+      });
+      
+      return percentageScores;
+    }
+
+    // Get position text based on score
+    function getPositionText(score) {
+      if (score >= 80) return "AI Champion";
+      if (score >= 60) return "AI Enthusiast";
+      if (score >= 40) return "AI Pragmatist";
+      if (score >= 20) return "AI Cautious";
+      return "AI Resistant";
+    }
+    
+    // Get position type based on score
+    function getPositionType(score) {
+      if (score >= 80) return "champion";
+      if (score >= 60) return "enthusiast";
+      if (score >= 40) return "pragmatist";
+      if (score >= 20) return "cautious";
+      return "resistant";
+    }
+
+    // Show results
+    function showResults() {
+      // Calculate scores
+      const scores = calculateResults();
+      
+      // Get position
+      const position = getPositionText(scores.total);
+      const positionKey = getPositionType(scores.total);
+      
+      // Update UI
+      app.elements.resultPosition.textContent = position;
+      app.elements.resultScore.textContent = `${scores.total}%`;
+      
+      app.elements.journeyScore.textContent = `${scores.consultant_journey}%`;
+      app.elements.journeyFill.style.width = '0%'; // Start at 0 for animation
+      
+      app.elements.clientScore.textContent = `${scores.client_experience}%`;
+      app.elements.clientFill.style.width = '0%'; // Start at 0 for animation
+      
+      app.elements.orgScore.textContent = `${scores.organizational_change}%`;
+      app.elements.orgFill.style.width = '0%'; // Start at 0 for animation
+      
+      app.elements.positionType.textContent = position;
+      
+      // Add recommendations
+      app.elements.recommendationsList.innerHTML = '';
+      recommendations[positionKey].forEach((recommendation, index) => {
+        const li = document.createElement('li');
+        li.textContent = recommendation;
+        li.style.opacity = 0;
+        li.style.transform = 'translateY(10px)';
+        app.elements.recommendationsList.appendChild(li);
+        
+        // Animate recommendations with staggered delay
+        setTimeout(() => {
+          li.style.transition = 'opacity 0.5s, transform 0.5s';
+          li.style.opacity = 1;
+          li.style.transform = 'translateY(0)';
+        }, 300 + (index * 150));
+      });
+      
+      showScreen('results');
+      
+      // Animate progress bars after a delay
+      setTimeout(() => {
+        app.elements.journeyFill.style.width = `${scores.consultant_journey}%`;
+        
+        setTimeout(() => {
+          app.elements.clientFill.style.width = `${scores.client_experience}%`;
+          
+          setTimeout(() => {
+            app.elements.orgFill.style.width = `${scores.organizational_change}%`;
+            
+            // Add animated shine effect to bars after they've filled
+            setTimeout(() => {
+              const fills = document.querySelectorAll('.dimension-fill');
+              fills.forEach(fill => {
+                fill.style.position = 'relative';
+                fill.style.overflow = 'hidden';
+                
+                const shine = document.createElement('div');
+                shine.style.position = 'absolute';
+                shine.style.top = '0';
+                shine.style.left = '0';
+                shine.style.width = '100%';
+                shine.style.height = '100%';
+                shine.style.background = 'linear-gradient(90deg, rgba(255,255,255,0) 0%, rgba(255,255,255,0.4) 50%, rgba(255,255,255,0) 100%)';
+                shine.style.transform = 'translateX(-100%)';
+                shine.style.animation = 'shine-bar 2s ease-in-out infinite';
+                
+                fill.appendChild(shine);
+              });
+            }, 800);
+          }, 400);
+        }, 400);
+      }, 500);
+    }
+
+    // Submit results
+    function submitResults() {
+      const endTime = new Date();
+      const duration = (endTime - app.data.startTime) / 1000; // in seconds
+      
+      const data = {
+        user: app.data.userData,
+        responses: app.data.responses,
+        metadata: {
+          startTime: app.data.startTime.toISOString(),
+          endTime: endTime.toISOString(),
+          duration,
+          scores: calculateResults()
+        }
+      };
+      
+      // Format the output for better readability
+      console.log("Assessment data:");
+      console.log(JSON.stringify(data, null, 2));
+      
+      showScreen('thankYou');
+    }
+
+    // Restart assessment
+    function restart() {
+      window.location.reload();
+    }
+
+    // View detailed report
+    function viewReport() {
+      alert("Detailed report feature is coming soon!");
+    }
+  </script>
+</body>
+</html>
